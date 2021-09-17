@@ -17,7 +17,7 @@ export async function connect() {
     username: DB_USERNAME,
     password: DB_PASSWORD,
     entities: [UserEntity, ProductEntity, OrderEntity, ProductsQuantityEntity],
-    synchronize: !IS_PRODUCTION,
+    synchronize: true,
     ssl: { rejectUnauthorized: false },
   });
 
