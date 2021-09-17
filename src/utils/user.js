@@ -4,9 +4,9 @@ import { authRequiredException } from "../exceptions/index.js";
 export const getUserIdFromJwt = ({ authorization: jwt }) => {
   if (!jwt) throw authRequiredException;
 
-  const { id } = verifyWithJwt(jwt);
+  const { id, role } = verifyWithJwt(jwt);
 
-  return id;
+  return { id, role };
 };
 
 export const getEmailFromJwt = ({ authorization: jwt }) => {

@@ -9,7 +9,7 @@ import {
 } from "../../exceptions/index.js";
 import { findElementByArgs } from "../../utils/db.js";
 import { signWithJwt } from "../../utils/jwt.js";
-import { getEmailFromJwt } from "../../utils/user.js";
+import { getEmailFromJwt, getUserIdFromJwt } from "../../utils/user.js";
 import { registerInput } from "../user/inputSchema.js";
 
 export const registerUser = async (req, res) => {
@@ -34,7 +34,12 @@ export const registerUser = async (req, res) => {
 
     const createdUser = await userRepository.insert(newUser);
 
-    const jwt = signWithJwt({ email, id: createdUser.identifiers[0].id });
+    const { role } = req.body;
+    const jwt = signWithJwt({
+      email,
+      id: createdUser.identifiers[0].id,
+      role,
+    });
 
     return res.status(201).json({ jwt });
   } catch (error) {
@@ -58,7 +63,11 @@ export const loginUser = async (req, res) => {
       throw invalidPasswordException;
     }
 
-    const jwt = signWithJwt({ email, id: existingUser.id });
+    const jwt = signWithJwt({
+      email,
+      id: existingUser.id,
+      role: existingUser.role,
+    });
 
     return res.status(201).json({ jwt });
   } catch (error) {
@@ -66,10 +75,14 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const getUsers = async (_, res) => {
+export const getUsers = async (req, res) => {
   const userRepository = getRepository(UserEntity);
 
   try {
+    const { role } = getUserIdFromJwt(req.headers);
+    // Extract this
+    if (role !== "admin") throw new Error("No Auorizado");
+
     const users = await userRepository.find();
 
     return res.status(200).json(users);
@@ -88,9 +101,9 @@ export const getMe = async (req, res) => {
 
     if (!user) throw userDoesNotExistException;
 
-    const { firstName, lastName, id } = user;
+    const { firstName, lastName, id, role } = user;
 
-    return res.status(200).json({ id, firstName, lastName, email });
+    return res.status(200).json({ id, firstName, lastName, email, role });
   } catch (error) {
     sendErrorResponse(error, res);
   }

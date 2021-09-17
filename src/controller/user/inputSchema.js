@@ -1,1 +1,7 @@
-export const registerInput = ["firstName", "lastName", "email", "password"];
+export const registerInput = [
+  "firstName",
+  "lastName",
+  "email",
+  "password",
+  "role",
+];

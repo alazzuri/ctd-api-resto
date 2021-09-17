@@ -1,5 +1,7 @@
 import { createConnection } from "typeorm";
-import { TaskEntity } from "../entities/task.js";
+import { OrderEntity } from "../entities/order.js";
+import { ProductEntity } from "../entities/product.js";
+import { ProductsQuantityEntity } from "../entities/products_quantity.js";
 import { UserEntity } from "../entities/user.js";
 import { enviroment } from "./enviroment.js";
 
@@ -14,7 +16,7 @@ export async function connect() {
     database: DB_NAME,
     username: DB_USERNAME,
     password: DB_PASSWORD,
-    entities: [UserEntity, TaskEntity],
+    entities: [UserEntity, ProductEntity, OrderEntity, ProductsQuantityEntity],
     synchronize: !IS_PRODUCTION,
     ssl: { rejectUnauthorized: false },
   });

@@ -3,89 +3,74 @@
   "info": {
     "description": "Este documento contiene la documentación para utilizar la API de TODOs",
     "version": "1.0.0",
-    "title": "TODOs API",
+    "title": "Restó API",
     "contact": {
-      "email": "info@todos.com"
+      "email": "apiteam@resto.com"
     },
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "https://ctd-todo-api.herokuapp.com",
+  "host": "https://ctd-api-resto.herokuapp.com",
   "basePath": "/v1",
   "tags": [
     {
-      "name": "tasks",
-      "description": "Operaciones relacionadas a tareas"
+      "name": "products",
+      "description": "Contains the available products of the Restó"
+    },
+    {
+      "name": "orders",
+      "description": "Access to Restó orders"
     },
     {
       "name": "users",
-      "description": "Operaciones relacionadas a los usuarios"
+      "description": "Operations about users"
     }
   ],
   "schemes": ["https", "http"],
   "paths": {
-    "/tasks": {
+    "/products": {
       "get": {
-        "tags": ["tasks"],
-        "summary": "Listado de tareas del usuario",
-        "description": "Devuelve un listado de tareas del usuario",
-        "operationId": "getTasks",
+        "tags": ["products"],
+        "summary": "Returns product inventory",
+        "description": "Returns all the products listed in the store",
+        "operationId": "getInventory",
         "produces": ["application/json"],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "description": "JWT",
-            "required": true,
-            "type": "string"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Operación exitosa",
+            "description": "successful operation",
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/tasks_list"
+                "$ref": "#/definitions/product_stored"
               }
             }
-          },
-          "401": {
-            "description": "Requiere Autorización"
-          },
-          "500": {
-            "description": "Error del servidor"
           }
-        },
-        "security": [
-          {
-            "store_auth": ["write:tasks"]
-          }
-        ]
+        }
       },
       "post": {
-        "tags": ["tasks"],
-        "summary": "Crea una nueva tarea del usuario",
-        "operationId": "createTask",
+        "tags": ["products"],
+        "summary": "Add a new product to the store",
+        "operationId": "addProduct",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
           {
             "in": "header",
             "name": "authorization",
-            "description": "JWT",
+            "description": "Authentication Token",
             "required": true,
             "type": "string"
           },
           {
             "in": "body",
             "name": "body",
-            "description": "Objeto con la descripción de la tarea que debe agregarse al listado",
+            "description": "Product object that needs to be added to the store",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/task_upload"
+              "$ref": "#/definitions/product_upload"
             }
           }
         ],
@@ -93,89 +78,40 @@
           "201": {
             "description": "Created",
             "schema": {
-              "$ref": "#/definitions/tasks_list"
+              "type": "object",
+              "$ref": "#/definitions/product_stored"
             }
           },
           "400": {
-            "description": "Alguno de los datos requeridos está incompleto"
+            "description": "Missing Arguments"
           },
           "401": {
-            "description": "Requiere Autorización"
+            "description": "Token has expired. Please login again"
           },
-          "500": {
-            "description": "Error del servidor"
+          "403": {
+            "description": "Forbidden"
           }
         },
         "security": [
           {
-            "store_auth": ["write:tasks"]
+            "store_auth": ["write:products"]
           }
         ]
       }
     },
-    "/tasks/{id}": {
-      "get": {
-        "tags": ["tasks"],
-        "summary": "Obtiene una determinada tarea",
-        "description": "Devuelve información sobre una tarea en particular",
-        "operationId": "getOneTask",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID de la tarea a obtener",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "in": "header",
-            "name": "authorization",
-            "description": "JWT",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tasks_list"
-            }
-          },
-          "400": {
-            "description": "ID Inválido"
-          },
-          "401": {
-            "description": "Requiere Autorización"
-          },
-          "404": {
-            "description": "Tarea inexistente"
-          },
-          "500": {
-            "description": "Error del servidor"
-          }
-        },
-        "security": [
-          {
-            "store_auth": ["write:tasks"]
-          }
-        ]
-      },
+    "/products/{productId}": {
       "put": {
-        "tags": ["tasks"],
-        "summary": "Actualiza una tarea existente",
+        "tags": ["products"],
+        "summary": "Update an existing product",
         "description": "",
-        "operationId": "updateTask",
+        "operationId": "updateProduct",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "id",
+            "name": "productId",
             "in": "path",
-            "description": "ID de la tarea a actualizar",
+            "description": "ID of product to update",
             "required": true,
             "type": "integer",
             "format": "int64"
@@ -183,57 +119,54 @@
           {
             "in": "header",
             "name": "authorization",
-            "description": "JWT",
+            "description": "Authentication Token",
             "required": true,
             "type": "string"
           },
           {
             "in": "body",
             "name": "body",
-            "description": "Propiedades de la tarea a actualizar",
+            "description": "Product's properties that need to be updated in the store",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/task_upload"
+              "$ref": "#/definitions/product_upload"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
+          "202": {
+            "description": "Acepted",
             "schema": {
-              "$ref": "#/definitions/tasks_list"
+              "$ref": "#/definitions/product_stored"
             }
           },
-          "400": {
-            "description": "ID Inválido"
-          },
           "401": {
-            "description": "Requiere Autorización"
+            "description": "Token has expired. Please login again"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
-            "description": "Tarea inexistente"
-          },
-          "500": {
-            "description": "Error del servidor"
+            "description": "Product not found"
           }
         },
         "security": [
           {
-            "store_auth": ["write:tasks"]
+            "store_auth": ["write:products"]
           }
         ]
       },
       "delete": {
-        "tags": ["tasks"],
-        "summary": "Elimina una tarea",
+        "tags": ["products"],
+        "summary": "Deletes a product",
         "description": "",
-        "operationId": "deleteTask",
+        "operationId": "deleteProduct",
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "id",
+            "name": "productId",
             "in": "path",
-            "description": "ID de la tarea a eliminar",
+            "description": "Product id to delete",
             "required": true,
             "type": "integer",
             "format": "int64"
@@ -241,31 +174,236 @@
           {
             "in": "header",
             "name": "authorization",
-            "description": "Token de autenticación",
+            "description": "Authentication Token",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "Tarea eliminada satisfactoriamente"
-          },
-          "400": {
-            "description": "ID Inválido"
+            "description": "Deleted"
           },
           "401": {
-            "description": "Requiere Autorización"
+            "description": "Token has expired. Please login again"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
-            "description": "Tarea inexistente"
+            "description": "Product not found"
           },
-          "500": {
-            "description": "Error del servidor"
+          "409": {
+            "description": "Product linked to an active order. Please resolve conflict and try again"
           }
         },
         "security": [
           {
-            "store_auth": ["write:tasks"]
+            "store_auth": ["write:products"]
+          }
+        ]
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": ["orders"],
+        "summary": "Returns orders inventory",
+        "description": "Returns all the orders existing in the store",
+        "operationId": "getOrders",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "description": "Authentication Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/order_complete"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "store_auth": ["write:orders"]
+          }
+        ]
+      },
+      "post": {
+        "tags": ["orders"],
+        "summary": "Add a new order to the store",
+        "description": "",
+        "operationId": "addOrder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Order object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/order_sent"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/order_complete"
+            }
+          },
+          "400": {
+            "description": "User not found"
+          },
+          "405": {
+            "description": "Missing Arguments"
+          }
+        }
+      }
+    },
+    "/orders/{orderId}": {
+      "put": {
+        "tags": ["orders"],
+        "summary": "Update the status of an existing order",
+        "description": "",
+        "operationId": "updateOrderStatus",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orderId",
+            "description": "Order id to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "description": "Authentication Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Order status that needs to be updated in the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/order_statusToUpload"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Acepted",
+            "schema": {
+              "$ref": "#/definitions/order_uploaded"
+            }
+          },
+          "401": {
+            "description": "Token has expired. Please login again"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "405": {
+            "description": "Invalid status suplied"
+          }
+        },
+        "security": [
+          {
+            "store_auth": ["write:orders"]
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["orders"],
+        "summary": "Deletes an order",
+        "description": "",
+        "operationId": "deleteOrder",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "Order id to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "description": "Authentication Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "401": {
+            "description": "Token has expired. Please login again"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order not found"
+          }
+        },
+        "security": [
+          {
+            "store_auth": ["write:products"]
+          }
+        ]
+      }
+    },
+    "private/users": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Returns users list",
+        "description": "Returns all the users registered in the store",
+        "operationId": "getUsers",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "description": "Authentication Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/user_registered"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "store_auth": ["write:users"]
           }
         ]
       }
@@ -273,15 +411,15 @@
     "/users": {
       "post": {
         "tags": ["users"],
-        "summary": "Crea un usuario",
-        "description": "Crea un nuevo usuario en la base de datos.",
-        "operationId": "registerUser",
+        "summary": "Create user",
+        "description": "Creates a new user into the store.",
+        "operationId": "createUser",
         "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
             "name": "body",
-            "description": "Información del usuario a crear",
+            "description": "Created user object",
             "required": true,
             "schema": {
               "$ref": "#/definitions/user_register"
@@ -289,18 +427,18 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Operación Exitosa. Retorna un JWT.",
+          "201": {
+            "description": "User created",
             "schema": {
               "type": "string",
               "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
             }
           },
           "400": {
-            "description": "El usuario ya se encuentra registrado / Alguno de los datos requeridos está incompleto"
+            "description": "Missing Arguments"
           },
-          "500": {
-            "description": "Error del servidor"
+          "409": {
+            "description": "Username already in use / User already exists"
           }
         }
       }
@@ -308,20 +446,20 @@
     "/users/login": {
       "post": {
         "tags": ["users"],
-        "summary": "Loguea al usuario dentro de la API",
+        "summary": "Logs user into the store",
         "description": "",
         "operationId": "loginUser",
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "Credenciales",
+            "name": "credentials",
             "in": "body",
-            "description": "El nombre de usuario y la contraseña del usuario",
+            "description": "The username and password for login",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                "username": {
                   "type": "string"
                 },
                 "password": {
@@ -333,52 +471,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Operación Exitosa. Retorna un JWT.",
+            "description": "successful operation",
             "schema": {
               "type": "string",
               "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            },
+            "headers": {
+              "X-Expires-After": {
+                "type": "string",
+                "format": "date-time",
+                "description": "date in UTC when token expires"
+              }
             }
           },
           "400": {
-            "description": "Contraseña incorrecta"
-          },
-          "404": {
-            "description": "El usuario no existe"
-          },
-          "500": {
-            "description": "Error del servidor"
-          }
-        }
-      }
-    },
-    "/users/getMe": {
-      "get": {
-        "tags": ["users"],
-        "summary": "Obtiene la información del usuario",
-        "description": "",
-        "operationId": "getMe",
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorization",
-            "description": "Token de autenticación",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación Exitosa",
-            "schema": {
-              "$ref": "#/definitions/user_getMe"
-            }
-          },
-          "404": {
-            "description": "El usuario no existe"
-          },
-          "500": {
-            "description": "Error del servidor"
+            "description": "Invalid Username / Wrong password supplied"
           }
         }
       }
@@ -387,17 +494,118 @@
   "securityDefinitions": {
     "store_auth": {
       "type": "oauth2",
-      "authorizationUrl": "https://ctd-todo-api.herokuapp.com/v1/users/login",
+      "authorizationUrl": "localhost/v1/users/login",
       "flow": "implicit",
       "scopes": {
-        "write:tasks": "Crear y modificar tareas"
+        "write:products": "create, modify and delete products in the store",
+        "write:orders": "modify orders status in the store",
+        "write:users": "list the registered users"
       }
     }
   },
   "definitions": {
+    "order_sent": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "number",
+          "example": 1
+        },
+        "description": {
+          "type": "string",
+          "example": "1xDoubleBurg 2xFrenchFr"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/selected_item"
+          }
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "payment method chosen by the user",
+          "enum": ["cash", "credit card"]
+        }
+      }
+    },
+    "order_complete": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["new", "confirmed", "preparing", "delivering", "delivered"]
+        },
+        "description": {
+          "type": "string",
+          "example": "1xDoubleBurg 2xFrenchFr"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "payment method chosen by the user",
+          "enum": ["cash", "credit card"]
+        },
+        "userId": {
+          "type": "number"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/product_stored"
+          }
+        }
+      }
+    },
+    "order_uploaded": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "number"
+        },
+        "order_status": {
+          "type": "string",
+          "enum": ["new", "confirmed", "preparing", "delivering", "delivered"]
+        },
+        "order_time": {
+          "type": "string",
+          "example": "17:39:20"
+        },
+        "order_description": {
+          "type": "string",
+          "example": "1xDoubleBurg 2xFrenchFr"
+        },
+        "order_amount": {
+          "type": "number"
+        },
+        "payment_method": {
+          "type": "string",
+          "description": "payment method chosen by the user",
+          "enum": ["cash", "credit card"]
+        },
+        "user_id": {
+          "type": "number"
+        }
+      }
+    },
+    "selected_item": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "number"
+        },
+        "quantity": {
+          "type": "number"
+        }
+      }
+    },
     "user_register": {
       "type": "object",
-      "required": ["firstName", "lastName", "email", "password"],
       "properties": {
         "firstName": {
           "type": "string"
@@ -405,15 +613,19 @@
         "lastName": {
           "type": "string"
         },
+        "password": {
+          "type": "string"
+        },
         "email": {
           "type": "string"
         },
-        "password": {
-          "type": "string"
+        "role": {
+          "type": "string",
+          "enum": ["admin", "customer"]
         }
       }
     },
-    "user_getMe": {
+    "user_registered": {
       "type": "object",
       "properties": {
         "id": {
@@ -427,47 +639,72 @@
         },
         "email": {
           "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "customer"]
         }
       }
     },
-    "tasks_list": {
+    "user_id": {
       "type": "object",
+      "properties": {
+        "userId": {
+          "type": "number"
+        }
+      }
+    },
+    "order_statusToUpload": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "order status in the store",
+          "enum": ["new", "confirmed", "preparing", "delivering", "delivered"]
+        }
+      }
+    },
+    "product_stored": {
+      "type": "object",
+      "required": ["name", "photoUrls", "price"],
       "properties": {
         "id": {
           "type": "integer",
           "format": "int64",
           "example": 1
         },
-        "description": {
+        "name": {
           "type": "string",
-          "example": "Aprender Javascript"
+          "example": "Double-burger"
         },
-        "completed": {
-          "type": "boolean",
-          "example": false
+        "price": {
+          "type": "number",
+          "example": 500
         },
-        "userId": {
-          "type": "integer",
-          "format": "int64",
-          "example": 1
+        "photo": {
+          "type": "string",
+          "example": "https://picsum.photos/200"
         },
         "createdAt": {
-          "type": "string",
-          "example": "2021-06-30T22:53:09.549Z"
+          "type": "string"
         }
       }
     },
-    "task_upload": {
+    "product_upload": {
       "type": "object",
-      "required": ["description"],
+      "required": ["name", "photo", "price"],
       "properties": {
-        "description": {
+        "name": {
           "type": "string",
-          "example": "Aprender Javascript"
+          "example": "Double-burger"
         },
-        "completed": {
-          "type": "boolean",
-          "default": false
+        "photo": {
+          "type": "string",
+          "example": "https://picsum.photos/200"
+        },
+        "price": {
+          "type": "number",
+          "example": 500
         }
       }
     }

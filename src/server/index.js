@@ -1,7 +1,8 @@
 import express from "express";
 import CORS from "cors";
 import userRouter from "../routes/user.routes.js";
-import taskRoutes from "../routes/task.routes.js";
+import productRoutes from "../routes/product.routes.js";
+import orderRoutes from "../routes/order.routes.js";
 import docsRoutes from "../routes/docs.routes.js";
 import { connect } from "../config/typeorm.js";
 import { enviroment } from "../config/enviroment.js";
@@ -22,7 +23,8 @@ import { enviroment } from "../config/enviroment.js";
 
     // ROUTERS
     server.use(userRouter);
-    server.use(taskRoutes);
+    server.use(productRoutes);
+    server.use(orderRoutes);
     server.use(docsRoutes);
   } catch (err) {
     console.log(err);

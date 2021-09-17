@@ -1,30 +1,25 @@
 import { EntitySchema } from "typeorm";
 
-export const UserEntity = new EntitySchema({
-  name: "User",
-  tableName: "users",
+export const ProductEntity = new EntitySchema({
+  name: "Product",
+  tableName: "products",
   columns: {
     id: {
       primary: true,
       type: "int",
       generated: true,
     },
-    firstName: {
+    name: {
       type: "varchar",
-    },
-    lastName: {
-      type: "varchar",
-    },
-    role: {
-      type: "enum",
-      enum: ["admin", "customer"],
       nullable: false,
     },
-    email: {
+    photo: {
       type: "varchar",
+      nullable: false,
     },
-    password: {
-      type: "varchar",
+    price: {
+      type: "int",
+      nullable: false,
     },
     createdAt: {
       type: "timestamp",

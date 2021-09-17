@@ -6,7 +6,10 @@ export const INVALID_PASSWORD = "Contraseña incorrecta";
 export const AUTH_REQUIRED = "Requiere Autorización";
 export const JWT_ERROR = "JsonWebTokenError";
 export const INVALID_ID = "ID Inválido";
-export const TASK_NOT_EXISTS = "Tarea inexistente";
+export const PRODUCT_NOT_EXISTS = "El producto no existe";
+export const ORDER_NOT_EXISTS = "La orden no existe";
+export const PRODUCT_QUANTITY_NOT_EXISTS =
+  "Hubo un error al obtener el detalle de la órden";
 
 // Error type
 export const badRequestErrors = [
@@ -16,7 +19,12 @@ export const badRequestErrors = [
   INVALID_ID,
 ];
 
-export const notFoundErrors = [USER_NOT_EXISTS, TASK_NOT_EXISTS];
+export const notFoundErrors = [
+  USER_NOT_EXISTS,
+  PRODUCT_NOT_EXISTS,
+  ORDER_NOT_EXISTS,
+  PRODUCT_QUANTITY_NOT_EXISTS,
+];
 
 export const authErrors = [AUTH_REQUIRED];
 
@@ -27,7 +35,9 @@ export const userDoesNotExistException = new Error(USER_NOT_EXISTS);
 export const invalidPasswordException = new Error(INVALID_PASSWORD);
 export const authRequiredException = new Error(AUTH_REQUIRED);
 export const invalidIdExeption = new Error(INVALID_ID);
-export const taskDoesNotExistException = new Error(TASK_NOT_EXISTS);
+export const productDoesNotExistException = new Error(PRODUCT_NOT_EXISTS);
+export const orderDoesNotExistException = new Error(ORDER_NOT_EXISTS);
+export const productQuantityDoesNotExistException = new Error(ORDER_NOT_EXISTS);
 
 // Error handler
 export const sendErrorResponse = (error, res) => {
