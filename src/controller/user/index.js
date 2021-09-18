@@ -69,7 +69,7 @@ export const loginUser = async (req, res) => {
       role: existingUser.role,
     });
 
-    return res.status(201).json({ jwt });
+    return res.status(201).json({ jwt, role: existingUser.role });
   } catch (error) {
     sendErrorResponse(error, res);
   }
