@@ -41,7 +41,7 @@ export const registerUser = async (req, res) => {
       role,
     });
 
-    return res.status(201).json({ jwt });
+    return res.status(201).json({ jwt, role });
   } catch (error) {
     sendErrorResponse(error, res);
   }
@@ -85,7 +85,15 @@ export const getUsers = async (req, res) => {
 
     const users = await userRepository.find();
 
-    return res.status(200).json(users);
+    const userData = users.map(({ firstName, lastName, email, role, id }) => ({
+      firstName,
+      lastName,
+      email,
+      role,
+      id,
+    }));
+
+    return res.status(200).json(userData);
   } catch (error) {
     sendErrorResponse(error, res);
   }

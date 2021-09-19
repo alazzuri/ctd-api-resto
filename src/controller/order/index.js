@@ -81,10 +81,7 @@ export const createOrder = async (req, res) => {
   const productRepository = getRepository(ProductEntity);
 
   try {
-    const { role } = getUserIdFromJwt(req.headers);
-
-    // Extract this
-    if (role !== "admin") throw new Error("No Auorizado");
+    const { id: userId } = getUserIdFromJwt(req.headers);
 
     const inputKeys = Object.keys(req.body);
 
@@ -109,7 +106,7 @@ export const createOrder = async (req, res) => {
       0
     );
 
-    const newOrder = ordersRepository.create({ ...req.body, amount });
+    const newOrder = ordersRepository.create({ ...req.body, amount, userId });
 
     const createdOrder = await ordersRepository.insert(newOrder);
 

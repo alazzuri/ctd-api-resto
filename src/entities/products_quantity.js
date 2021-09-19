@@ -27,11 +27,11 @@ export const ProductsQuantityEntity = new EntitySchema({
     },
   },
   relations: {
-    orderId: {
+    order: {
       target: "Order",
       type: "many-to-one",
     },
-    productId: {
+    product: {
       target: "Product",
       type: "many-to-one",
     },

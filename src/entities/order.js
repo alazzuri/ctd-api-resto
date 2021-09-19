@@ -36,7 +36,7 @@ export const OrderEntity = new EntitySchema({
     },
   },
   relations: {
-    userId: {
+    user: {
       target: "User",
       type: "many-to-one",
     },

@@ -94,7 +94,7 @@ export const updateProductQuantity = async (req, res) => {
   }
 };
 
-export const deleteProductQuantityByOrderId = async (orderId, res) => {
+export const deleteProductQuantityByOrderId = async (orderId) => {
   const productQuantityRepository = getRepository(ProductsQuantityEntity);
 
   try {
@@ -109,6 +109,6 @@ export const deleteProductQuantityByOrderId = async (orderId, res) => {
 
     return true;
   } catch (error) {
-    sendErrorResponse(error, res);
+    throw new Error(error);
   }
 };
