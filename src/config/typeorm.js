@@ -1,9 +1,11 @@
-import { createConnection } from "typeorm";
+import typeorm from "typeorm";
 import { OrderEntity } from "../entities/order.js";
 import { ProductEntity } from "../entities/product.js";
 import { ProductsQuantityEntity } from "../entities/products_quantity.js";
 import { UserEntity } from "../entities/user.js";
 import { enviroment } from "./enviroment.js";
+
+const { createConnection } = typeorm;
 
 const { DB_HOST, DB_PORT, DB_NAME, DB_PASSWORD, DB_USERNAME, IS_PRODUCTION } =
   enviroment;
