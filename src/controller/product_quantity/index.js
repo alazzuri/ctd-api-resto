@@ -1,4 +1,4 @@
-import { getRepository } from "typeorm";
+import typeorm from "typeorm";
 import { ProductsQuantityEntity } from "../../entities/products_quantity.js";
 import {
   invalidIdExeption,
@@ -7,6 +7,8 @@ import {
   orderDoesNotExistException,
 } from "../../exceptions/index.js";
 import { getUserIdFromJwt } from "../../utils/user.js";
+
+const { getRepository } = typeorm;
 
 export const getAllProductsQuantity = async (_, res) => {
   const productQuantityRepository = getRepository(ProductsQuantityEntity);

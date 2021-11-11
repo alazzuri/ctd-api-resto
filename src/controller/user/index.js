@@ -1,4 +1,4 @@
-import { getRepository } from "typeorm";
+import typeorm from "typeorm";
 import { UserEntity } from "../../entities/user.js";
 import {
   invalidPasswordException,
@@ -11,6 +11,8 @@ import { findElementByArgs } from "../../utils/db.js";
 import { signWithJwt } from "../../utils/jwt.js";
 import { getEmailFromJwt, getUserIdFromJwt } from "../../utils/user.js";
 import { registerInput } from "../user/inputSchema.js";
+
+const { getRepository } = typeorm;
 
 export const registerUser = async (req, res) => {
   const userRepository = getRepository(UserEntity);

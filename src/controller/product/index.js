@@ -1,4 +1,4 @@
-import { getRepository } from "typeorm";
+import typeorm from "typeorm";
 import { ProductEntity } from "../../entities/product.js";
 import { ProductsQuantityEntity } from "../../entities/products_quantity.js";
 import {
@@ -10,6 +10,8 @@ import {
 import { PRODUCT_DELETED } from "../../utils/constants.js";
 import { getUserIdFromJwt } from "../../utils/user.js";
 import { productInput } from "./inputSchema.js";
+
+const { getRepository } = typeorm;
 
 export const getAllProducts = async (req, res) => {
   const productsRepository = getRepository(ProductEntity);
