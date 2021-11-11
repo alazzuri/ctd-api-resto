@@ -21,5 +21,5 @@ export async function connect() {
     ssl: { rejectUnauthorized: false },
   });
 
-  console.log(`Database connected ✅`);
+  console.log(`Database connected ✅✅`);
 }
